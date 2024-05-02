@@ -1,0 +1,29 @@
+{
+  "name": "pbi_carte_client",
+  "description": "Custom pbi visuel, carte pour afficher clients avec divers informations",
+  "repository": {
+    "type": "github",
+    "url": "default_template_value"
+  },
+  "license": "MIT",
+  "scripts": {
+    "pbiviz": "powershell -ExecutionPolicy Bypass pbiviz",
+    "start": "powershell -ExecutionPolicy Bypass pbiviz start",
+    "package": "powershell -ExecutionPolicy Bypass pbiviz package",
+    "lint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "dependencies": {
+    "@types/d3": "5.7.2",
+    "d3": "^7.9.0",
+    "leaflet": "^1.9.4",
+    "powerbi-visuals-api": "5.1.0",
+    "powerbi-visuals-utils-formattingmodel": "5.0.0"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.12",
+    "ts-loader": "6.1.0",
+    "tslint": "^5.18.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "3.6.3"
+  }
+}

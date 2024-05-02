@@ -1,0 +1,25 @@
+{
+  "visual": {
+    "name": "Test custom visuel",
+    "displayName": "Test custom visuel",
+    "guid": "TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1",
+    "visualClassName": "Visual",
+    "version": "1.0.0",
+    "description": "Test custom visuel",
+    "supportUrl": "https://community.powerbi.com",
+    "gitHubUrl": "https://github.com"
+  },
+  "apiVersion": "5.1.0",
+  "author": {
+    "name": "Leopold",
+    "email": "l.vertadier@groupe-nadia.com"
+  },
+  "assets": {
+    "icon": "assets/icon.png"
+  },
+  "externalJS": null,
+  "style": "style/visual.less",
+  "capabilities": "capabilities.json",
+  "dependencies": null,
+  "stringResources": []
+}
