@@ -5,8 +5,8 @@ import VisualConstructorOptions = powerbiVisualsApi.extensibility.visual.VisualC
 import DialogConstructorOptions = powerbiVisualsApi.extensibility.visual.DialogConstructorOptions;
 var powerbiKey: any = "powerbi";
 var powerbi: any = window[powerbiKey];
-var TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG: IVisualPlugin = {
-    name: 'TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG',
+var TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1: IVisualPlugin = {
+    name: 'TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1',
     displayName: 'Test custom visuel',
     class: 'Visual',
     apiVersion: '5.1.0',
@@ -27,6 +27,6 @@ var TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG: IVisualPlugin = {
 if (typeof powerbi !== "undefined") {
     powerbi.visuals = powerbi.visuals || {};
     powerbi.visuals.plugins = powerbi.visuals.plugins || {};
-    powerbi.visuals.plugins["TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG"] = TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG;
+    powerbi.visuals.plugins["TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1"] = TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1;
 }
-export default TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1_DEBUG;
+export default TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1;

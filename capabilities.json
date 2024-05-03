@@ -1,21 +1,119 @@
 {
-    "dataRoles": [
-        {
-            "displayName": "Measure",
-            "name": "measure",
-            "kind": "Measure"
+  "dataRoles": [
+    {
+      "name": "latitude",
+      "kind": "Grouping",
+      "displayName": "Latitude"
+    },
+    {
+      "name": "longitude",
+      "kind": "Grouping",
+      "displayName": "Longitude"
+    },
+    {
+        "name": "raison_social",
+        "kind": "Grouping",
+        "displayName": "Raison social"
+    },
+    {
+        "name": "rayon_leads",
+        "kind": "Grouping",
+        "displayName": "Rayon leads"
+    },
+    {
+        "name": "prospect",
+        "kind": "Grouping",
+        "displayName": "Prospect"
+    },
+    {
+        "name": "famille_tarifaire",
+        "kind": "Grouping",
+        "displayName": "Famille tarifaire"
+    },
+    {
+        "name": "lead",
+        "kind": "Grouping",
+        "displayName": "Lead"
+    },
+    {
+        "name": "derniere_action_commerciale",
+        "kind": "Grouping",
+        "displayName": "Date dernière action commerciale"
+    },
+    {
+        "name": "derniere_commande",
+        "kind": "Grouping",
+        "displayName": "Date dernière commande"
+    },
+    {
+        "name": "nombre_devis",
+        "kind": "Measure",
+        "displayName": "Nombre de devis"
+    }
+  ],
+  "objects": {
+    "general": {
+      "displayName": "General",
+      "displayNameKey": "formattingGeneral",
+      "properties": {
+        "filter": {
+          "type": {
+            "filter": true
+          }
         }
+      }
+    }
+  },
+  "dataViewMappings": [
+    {
+    "conditions": [
+        { "latitude": { "max": 1 } },
+        { "longitude": { "max": 1 } },
+        { "rayon_leads": { "max": 1 } },
+        { "raison_social": { "max": 1 } }
     ],
-    "objects": {},
-    "dataViewMappings": [
-        {
-            "conditions": [
-                { "measure": { "max": 1 } }
-            ],
-            "single": {
-                "role": "measure"
+      "table": {
+        "rows": {
+          "select": [
+            {
+              "for": { "in": "latitude" }
+            },
+            {
+              "for": { "in": "longitude" }
+            },
+            {
+                "for": { "in": "raison_social" }
+            },
+            {
+                "for": { "in": "rayon_leads" }
+            },
+            {
+                "for": { "in": "prospect" }
+            },
+            {
+                "for": { "in": "famille_tarifaire" }
+            },
+            {
+                "for": { "in": "lead" }
+            },
+            {
+                "for": { "in": "derniere_action_commerciale" }
+            },
+            {
+                "for": { "in": "derniere_commande" }
+            },
+            {
+                "for": { "in": "nombre_devis" }
+            }
+          ],
+        "dataReductionAlgorithm": {
+            "window": {
+                "count": 10000
             }
         }
-    ],
-    "privileges": []
+        }
+      }
+    }
+  ],
+  "privileges": []
 }

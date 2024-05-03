@@ -19,6 +19,17 @@
   border: 3px;
   border-color: black;
 }
+#popup_title {
+  text-align: center;
+}
+#popup_list {
+  font-size: medium;
+  margin: 0;
+  padding: 0;
+}
+.popup_list_field {
+  font-weight: bold;
+}
 
 /* required styles */
 .leaflet-pane,
@@ -480,7 +491,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .leaflet-popup-content-wrapper {
   padding: 1px;
   text-align: left;
-  border-radius: 12px;
+  border-radius: 6px;
 }
 .leaflet-popup-content {
   margin: 13px 24px 13px 20px;
@@ -644,5 +655,3 @@ svg.leaflet-image-layer.leaflet-interactive path {
   }
 }
 
-
-/*# sourceMappingURL=https://localhost:8080/assets/visual.css.map*/

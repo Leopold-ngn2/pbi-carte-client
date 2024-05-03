@@ -1,13 +1,13 @@
 {
   "visual": {
-    "name": "Test custom visuel",
-    "displayName": "Test custom visuel",
-    "guid": "TestcustomvisuelCA131710DDBF4568AF35D83E9C1B01B1",
+    "name": "Carte des leads",
+    "displayName": "Carte des leads",
+    "guid": "CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1",
     "visualClassName": "Visual",
     "version": "1.0.0",
-    "description": "Test custom visuel",
+    "description": "Carte des clients leads SIB",
     "supportUrl": "https://community.powerbi.com",
-    "gitHubUrl": "https://github.com"
+    "gitHubUrl": "https://github.com/Leopold-ngn2/pbi-carte-client"
   },
   "apiVersion": "5.1.0",
   "author": {

@@ -14,14 +14,9 @@ export class Visual implements IVisual {
   private container: Selection<HTMLElement>;
   private map: L.Map;
   private basemap: L.TileLayer;
-  private markerLayer: L.LayerGroup<L.CircleMarker>;
+  private markerLayer: L.LayerGroup<L.Marker>;
 
   constructor(options: VisualConstructorOptions) {
-    /*
-    head[0].append(
-      '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>'
-    );
-    */
     this.container = d3.select(options.element)
     .append('div').classed('container', true);
     this.container
@@ -29,63 +24,38 @@ export class Visual implements IVisual {
       .attr("id", function (d, i) {
         return "map";
     });
-
-      this.basemap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
-
-      this.map = L.map('map');
-
-      this.map.setView([46.978343, -0.837974], 8)
-
-      this.basemap.addTo(this.map);
-
-      L.marker([46.978343, -0.837974]).addTo(this.map)
-      L.circle([46.978343, -0.837974], { radius: 1000 }).addTo(this.map)
-
-      //this.map.addLayer(this.basemap);
+    this.basemap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
+    this.map = L.map('map');
+    this.map.setView([46.978343, -0.837974], 6)
+    this.basemap.addTo(this.map);
+    this.markerLayer = L.layerGroup();
+    this.markerLayer.addTo(this.map)
   }
 
   public update(options: VisualUpdateOptions) {
-    // =  'height', options.viewport.height
-   // .css('width', options.viewport.width);
+            this.markerLayer.clearLayers();
 
-
-    /*
-        let dataView: DataView = options.dataViews[0];
-        let width: number = options.viewport.width;
-        let height: number = options.viewport.height;
-        this.svg.attr("width", width);
-        this.svg.attr("height", height);
-        let radius: number = Math.min(width, height) / 2.2;
-        this.circle
-            .style("fill", "white")
-            .style("fill-opacity", 0.5)
-            .style("stroke", "black")
-            .style("stroke-width", 2)
-            .attr("r", radius)
-            .attr("cx", width / 2)
-            .attr("cy", height / 2);
-        let fontSizeValue: number = Math.min(width, height) / 5;
-        this.textValue
-            .text(<string>dataView.single.value)
-            .attr("x", "50%")
-            .attr("y", "50%")
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .style("font-size", fontSizeValue + "px");
-        let fontSizeLabel: number = fontSizeValue / 4;
-        this.textLabel
-            .text(dataView.metadata.columns[0].displayName)
-            .attr("x", "50%")
-            .attr("y", height / 2)
-            .attr("dy", fontSizeValue / 1.2)
-            .attr("text-anchor", "middle")
-            .style("font-size", fontSizeLabel + "px");
-        */
-
+            options.dataViews[0].table.rows.forEach(
+                (row) => {
+                this.markerLayer.addLayer(L.marker([+row[0], +row[1]]).bindPopup(`
+                <h3 id="popup_title">${row[3]}</h3>
+                <ul id="popup_list">
+                <li><span class="popup_list_field">Rayon leads = </span>${row[2]}</li>
+                <li><span class="popup_list_field">Prospect : </span>${row[4]}</li>
+                <li><span class="popup_list_field">Famille tarifaire : </span>${row[6]}</li>
+                <li><span class="popup_list_field">Lead : </span>${row[5]}</li>
+                <li><span class="popup_list_field">Date dernière action commerciale : </span>${new Date(""+row[7]).toDateString()}</li>
+                <li><span class="popup_list_field">Date dernière commande : </span>${new Date(""+row[8]).toDateString()}</li>
+                <li><span class="popup_list_field">Nombre de devis (6 Mois glissants) : </span>${row[9]}</li>
+                </ul>
+                `))
+                this.markerLayer.addLayer(L.circle([+row[0], +row[1]], {radius: +row[2] * 1000, color: "#60a6f3", weight: 1}))
+                }
+            )
+            this.map.addLayer(this.markerLayer);
   }
   
   public destroy() {
-    this.map.remove();
+        this.map.remove();
     }
-    
 }
