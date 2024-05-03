@@ -46,9 +46,14 @@
         "displayName": "Date dernière commande"
     },
     {
-        "name": "nombre_devis",
-        "kind": "Measure",
-        "displayName": "Nombre de devis"
+      "name": "nombre_devis",
+      "kind": "Measure",
+      "displayName": "Nombre de devis"
+    },
+    {
+      "name": "CA",
+      "kind": "Measure",
+      "displayName": "Chiffre d'affaires"
     }
   ],
   "objects": {
@@ -66,14 +71,8 @@
   },
   "dataViewMappings": [
     {
-    "conditions": [
-        { "latitude": { "max": 1 } },
-        { "longitude": { "max": 1 } },
-        { "rayon_leads": { "max": 1 } },
-        { "raison_social": { "max": 1 } }
-    ],
-      "table": {
-        "rows": {
+      "categorical": {
+        "categories": {
           "select": [
             {
               "for": { "in": "latitude" }
@@ -103,7 +102,7 @@
                 "for": { "in": "derniere_commande" }
             },
             {
-                "for": { "in": "nombre_devis" }
+              "for": { "in": "derniere_commande" }
             }
           ],
         "dataReductionAlgorithm": {
@@ -111,7 +110,13 @@
                 "count": 10000
             }
         }
-        }
+        },
+        "values": {
+          "select": [
+              { "bind": { "to": "nombre_devis" } },
+              { "bind": { "to": "CA" } }
+          ]
+      }
       }
     }
   ],

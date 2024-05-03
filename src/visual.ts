@@ -34,22 +34,24 @@ export class Visual implements IVisual {
 
   public update(options: VisualUpdateOptions) {
             this.markerLayer.clearLayers();
+            console.log(options.dataViews[0].categorical.categories);
+            let categories = options.dataViews[0].categorical.categories;
 
-            options.dataViews[0].table.rows.forEach(
-                (row) => {
-                this.markerLayer.addLayer(L.marker([+row[0], +row[1]]).bindPopup(`
-                <h3 id="popup_title">${row[3]}</h3>
+            categories[0].values.forEach(
+                (value, i) => {
+                this.markerLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]]).bindPopup(`
+                <h3 id="popup_title">${categories[2].values[i]} - CA : ${Math.round(+options.dataViews[0].categorical.values[1].values[i])} €</h3>
                 <ul id="popup_list">
-                <li><span class="popup_list_field">Rayon leads = </span>${row[2]}</li>
-                <li><span class="popup_list_field">Prospect : </span>${row[4]}</li>
-                <li><span class="popup_list_field">Famille tarifaire : </span>${row[6]}</li>
-                <li><span class="popup_list_field">Lead : </span>${row[5]}</li>
-                <li><span class="popup_list_field">Date dernière action commerciale : </span>${new Date(""+row[7]).toDateString()}</li>
-                <li><span class="popup_list_field">Date dernière commande : </span>${new Date(""+row[8]).toDateString()}</li>
-                <li><span class="popup_list_field">Nombre de devis (6 Mois glissants) : </span>${row[9]}</li>
+                <li><span class="popup_list_field">Rayon leads : </span>${categories[3].values[i]} km</li>
+                <li><span class="popup_list_field">Prospect : </span>${categories[4].values[i]}</li>
+                <li><span class="popup_list_field">Famille tarifaire : </span>${categories[5].values[i]}</li>
+                <li><span class="popup_list_field">Lead : </span>${categories[6].values[i]}</li>
+                <li><span class="popup_list_field">Date dernière action commerciale : </span>${new Date(""+categories[7].values[i]).toDateString()}</li>
+                <li><span class="popup_list_field">Date dernière commande : </span>${new Date(""+categories[8].values[i]).toDateString()}</li>
+                <li><span class="popup_list_field">Nombre de devis : </span>${options.dataViews[0].categorical.values[0].values[i]}</li>
                 </ul>
                 `))
-                this.markerLayer.addLayer(L.circle([+row[0], +row[1]], {radius: +row[2] * 1000, color: "#60a6f3", weight: 1}))
+                this.markerLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], {radius: +categories[3].values[i] * 1000, color: "#60a6f3", weight: 1}))
                 }
             )
             this.map.addLayer(this.markerLayer);
