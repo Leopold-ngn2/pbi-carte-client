@@ -8,7 +8,12 @@ export declare class Visual implements IVisual {
     private container;
     private map;
     private basemap;
-    private markerLayer;
+    private leadLayer;
+    private clientLayer;
+    private prospectLayer;
+    private leadIcon;
+    private clientIcon;
+    private prospectIcon;
     constructor(options: VisualConstructorOptions);
     update(options: VisualUpdateOptions): void;
     destroy(): void;
