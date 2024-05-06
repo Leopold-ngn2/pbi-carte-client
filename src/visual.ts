@@ -15,6 +15,7 @@ export class Visual implements IVisual {
   private map: L.Map;
   private basemap: L.TileLayer;
   private markerLayer: L.LayerGroup<L.Marker>;
+  private leadIcon;
 
   constructor(options: VisualConstructorOptions) {
     this.container = d3.select(options.element)
@@ -30,16 +31,22 @@ export class Visual implements IVisual {
     this.basemap.addTo(this.map);
     this.markerLayer = L.layerGroup();
     this.markerLayer.addTo(this.map)
+    this.leadIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/Leopold-ngn2/pbi-carte-client/master/assets/marker-icon-red.png',
+      iconSize:     [38, 95], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+  });
   }
 
   public update(options: VisualUpdateOptions) {
             this.markerLayer.clearLayers();
-            console.log(options.dataViews[0].categorical.categories);
             let categories = options.dataViews[0].categorical.categories;
-
             categories[0].values.forEach(
                 (value, i) => {
-                this.markerLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]]).bindPopup(`
+                const popup = `
                 <h3 id="popup_title">${categories[2].values[i]} - CA : ${Math.round(+options.dataViews[0].categorical.values[1].values[i])} €</h3>
                 <ul id="popup_list">
                 <li><span class="popup_list_field">Rayon leads : </span>${categories[3].values[i]} km</li>
@@ -50,9 +57,14 @@ export class Visual implements IVisual {
                 <li><span class="popup_list_field">Date dernière commande : </span>${new Date(""+categories[8].values[i]).toDateString()}</li>
                 <li><span class="popup_list_field">Nombre de devis : </span>${options.dataViews[0].categorical.values[0].values[i]}</li>
                 </ul>
-                `))
-                this.markerLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], {radius: +categories[3].values[i] * 1000, color: "#60a6f3", weight: 1}))
-                }
+                `
+                if (categories[6].values[i] === 'Oui') {
+                  this.markerLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.leadIcon}).bindPopup(popup))
+                  this.markerLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], {radius: +categories[3].values[i] * 1000, color: "#60a6f3", weight: 1}))
+                } else {
+                  this.markerLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]]).bindPopup(popup))
+                  }
+              }
             )
             this.map.addLayer(this.markerLayer);
   }
