@@ -4,8 +4,6 @@ import powerbi from "powerbi-visuals-api";
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisual = powerbi.extensibility.visual.IVisual;
-import DataView = powerbi.DataView;
-import IVisualHost = powerbi.extensibility.IVisualHost;
 type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
 import * as d3 from "d3";
 import * as L from "leaflet";
@@ -22,13 +20,25 @@ export class Visual implements IVisual {
   private prospectIcon: L.Icon;
 
   constructor(options: VisualConstructorOptions) {
+
     this.container = d3.select(options.element)
-      .append('div').classed('container', true);
+     .append('div').classed('container', true)
     this.container
-      .append("div")
-      .attr("id", function (d, i) {
-        return "map";
-      });
+     .append("div")
+     .attr("id", function (d, i) {
+       return "map";
+     })
+     
+    /*
+     this.container
+     .append("div")
+     .attr("id", function (d, i) {
+       return "tableau-client";
+     })
+     d3.select('#tableau-client').html('<div id="title_client">Liste des clients</h1>')
+     */
+     // document.querySelector('#tableau-client').innerHTML = '<div id="title_client">Liste des clients</h1>'
+
     this.basemap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
     this.map = L.map('map');
     this.map.setView([46.978343, -0.837974], 6)
@@ -39,6 +49,7 @@ export class Visual implements IVisual {
     this.clientLayer.addTo(this.map)
     this.prospectLayer = L.layerGroup();
     this.prospectLayer.addTo(this.map)
+
     const baseMaps = {
       "OpenStreetMap": this.basemap
     };
@@ -79,10 +90,11 @@ export class Visual implements IVisual {
     this.clientLayer.clearLayers();
     this.prospectLayer.clearLayers();
     let categories = options.dataViews[0].categorical.categories;
+    console.log(categories);
     categories[0].values.forEach(
       (value, i) => {
         const popup = `
-                <h3 id="popup_title">${categories[2].values[i]} - CA : ${Math.round(+options.dataViews[0].categorical.values[1].values[i])} €</h3>
+                <h3 id="popup_title">${categories[2].values[i]}, CA = ${Math.round(+options.dataViews[0].categorical.values[1]?.values[i] || 0)} €</h3>
                 <ul id="popup_list">
                 <li><span class="popup_list_field">Rayon leads : </span>${categories[3].values[i]} km</li>
                 <li><span class="popup_list_field">Prospect : </span>${categories[4].values[i]}</li>
@@ -90,7 +102,18 @@ export class Visual implements IVisual {
                 <li><span class="popup_list_field">Lead : </span>${categories[6].values[i]}</li>
                 <li><span class="popup_list_field">Date dernière action commerciale : </span>${new Date("" + categories[7].values[i]).toDateString()}</li>
                 <li><span class="popup_list_field">Date dernière commande : </span>${new Date("" + categories[8].values[i]).toDateString()}</li>
-                <li><span class="popup_list_field">Nombre de devis : </span>${options.dataViews[0].categorical.values[0].values[i]}</li>
+                <li><span class="popup_list_field">Nombre de devis (6MG) : </span>${options.dataViews[0].categorical.values[0]?.values[i] || '0'}</li>
+                <li><span class="popup_list_field">Gammes de lead : </span>
+                <ul>
+                  <li><span class="">${(categories[9] && categories[10].values[i] ==='Oui') ? categories[9].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[10] && categories[10].values[i] ==='Oui') ? categories[10].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[11] && categories[11].values[i] ==='Oui') ? categories[11].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[12] && categories[12].values[i] ==='Oui') ? categories[12].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[13] && categories[13].values[i] ==='Oui') ? categories[13].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[14] && categories[14].values[i] ==='Oui') ? categories[14].source.displayName : ''}</span></li>
+                  <li><span class="">${(categories[15] && categories[15].values[i] ==='Oui') ? categories[15].source.displayName : ''}</span></li>
+                </ul>
+                </li>
                 </ul>
                 `
         if (categories[6].values[i] === 'Oui') {
@@ -103,6 +126,11 @@ export class Visual implements IVisual {
         if (categories[6].values[i] === 'Non' && categories[4].values[i] === 'Non') {
           this.clientLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.clientIcon }).bindPopup(popup))
         }
+        /*
+        if (options.dataViews[0].categorical.values[2].values[i] === 1) {
+          this.alerteLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.alerteIcon }).bindPopup(popup))
+        }
+        */
       }
     )
     this.map.addLayer(this.leadLayer);

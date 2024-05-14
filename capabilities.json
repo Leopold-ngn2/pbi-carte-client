@@ -48,12 +48,17 @@
     {
       "name": "nombre_devis",
       "kind": "Measure",
-      "displayName": "Nombre de devis"
+      "displayName": "Nombre de devis (6MG)"
     },
     {
       "name": "CA",
       "kind": "Measure",
       "displayName": "Chiffre d'affaires"
+    },
+    {
+      "name": "gammes_lead",
+      "kind": "Grouping",
+      "displayName": "Gammes de lead"
     }
   ],
   "objects": {
@@ -81,7 +86,7 @@
               "for": { "in": "longitude" }
             },
             {
-                "for": { "in": "raison_social" }
+              "for": { "in": "raison_social" }
             },
             {
                 "for": { "in": "rayon_leads" }
@@ -99,17 +104,17 @@
                 "for": { "in": "derniere_action_commerciale" }
             },
             {
-                "for": { "in": "derniere_commande" }
+              "for": { "in": "derniere_commande" }
             },
             {
-              "for": { "in": "derniere_commande" }
+              "for": { "in": "gammes_lead" }
             }
           ],
         "dataReductionAlgorithm": {
             "window": {
                 "count": 10000
             }
-        }
+          }
         },
         "values": {
           "select": [
