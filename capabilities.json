@@ -125,5 +125,11 @@
       }
     }
   ],
-  "privileges": []
+  "privileges": [
+    {
+      "name": "WebAccess",
+      "essential": true,
+      "parameters": [ "https://raw.githubusercontent.com", "https://cdnjs.cloudflare.com", "https://tile.openstreetmap.org" ]
+    }
+  ]
 }
