@@ -48,7 +48,7 @@
     {
       "name": "nombre_devis",
       "kind": "Measure",
-      "displayName": "Nombre de devis (6MG)"
+      "displayName": "Nombre de devis"
     },
     {
       "name": "CA",
@@ -59,6 +59,16 @@
       "name": "gammes_lead",
       "kind": "Grouping",
       "displayName": "Gammes de lead"
+    },
+    {
+      "name": "id_client",
+      "kind": "Grouping",
+      "displayName": "Id client"
+    },
+    {
+      "name": "nb_clients",
+      "kind": "Measure",
+      "displayName": "Nombre de clients"
     }
   ],
   "objects": {
@@ -108,6 +118,9 @@
             },
             {
               "for": { "in": "gammes_lead" }
+            },
+            {
+              "for": { "in": "id_client" }
             }
           ],
         "dataReductionAlgorithm": {
@@ -119,7 +132,8 @@
         "values": {
           "select": [
               { "bind": { "to": "nombre_devis" } },
-              { "bind": { "to": "CA" } }
+              { "bind": { "to": "CA" } },
+              { "bind": { "to": "nb_clients" } }
           ]
       }
       }

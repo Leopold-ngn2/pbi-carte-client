@@ -5,8 +5,8 @@ import VisualConstructorOptions = powerbiVisualsApi.extensibility.visual.VisualC
 import DialogConstructorOptions = powerbiVisualsApi.extensibility.visual.DialogConstructorOptions;
 var powerbiKey: any = "powerbi";
 var powerbi: any = window[powerbiKey];
-var CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1: IVisualPlugin = {
-    name: 'CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1',
+var CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1_DEBUG: IVisualPlugin = {
+    name: 'CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1_DEBUG',
     displayName: 'Carte des leads',
     class: 'Visual',
     apiVersion: '5.1.0',
@@ -27,6 +27,6 @@ var CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1: IVisualPlugin = {
 if (typeof powerbi !== "undefined") {
     powerbi.visuals = powerbi.visuals || {};
     powerbi.visuals.plugins = powerbi.visuals.plugins || {};
-    powerbi.visuals.plugins["CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1"] = CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1;
+    powerbi.visuals.plugins["CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1_DEBUG"] = CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1_DEBUG;
 }
-export default CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1;
+export default CarteLeadsCA131710DDBF4568AF35D83E9C1B01B1_DEBUG;

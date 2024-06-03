@@ -3,12 +3,14 @@ import "./../style/leaflet.less";
 import powerbi from "powerbi-visuals-api";
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
+import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import IVisual = powerbi.extensibility.visual.IVisual;
 type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
 import * as d3 from "d3";
 import * as L from "leaflet";
 
 export class Visual implements IVisual {
+  private host: IVisualHost;
   private container: Selection<HTMLElement>;
   private map: L.Map;
   private basemap: L.TileLayer;
@@ -19,8 +21,9 @@ export class Visual implements IVisual {
   private clientIcon: L.Icon;
   private prospectIcon: L.Icon;
 
-  constructor(options: VisualConstructorOptions) {
 
+  constructor(options: VisualConstructorOptions) {
+    this.host = options.host;
     this.container = d3.select(options.element)
      .append('div').classed('container', true)
     this.container
@@ -28,16 +31,6 @@ export class Visual implements IVisual {
      .attr("id", function (d, i) {
        return "map";
      })
-     
-    /*
-     this.container
-     .append("div")
-     .attr("id", function (d, i) {
-       return "tableau-client";
-     })
-     d3.select('#tableau-client').html('<div id="title_client">Liste des clients</h1>')
-     */
-     // document.querySelector('#tableau-client').innerHTML = '<div id="title_client">Liste des clients</h1>'
 
     this.basemap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
     this.map = L.map('map');
@@ -90,18 +83,19 @@ export class Visual implements IVisual {
     this.clientLayer.clearLayers();
     this.prospectLayer.clearLayers();
     let categories = options.dataViews[0].categorical.categories;
-    console.log(categories);
     categories[0].values.forEach(
       (value, i) => {
         const popup = `
                 <h3 id="popup_title">${categories[2].values[i]}, CA = ${Math.round(+options.dataViews[0].categorical.values[1]?.values[i] || 0)} €</h3>
                 <ul id="popup_list">
+                <li><a id="id_${categories[16].values[i]}" href="https://10.90.40.45:8443/CochiseWeb/dm1/gererClient/gererClient.do?cmd=consulterClient&id=${categories[16].values[i]}" target="_blank">Ouvrir la fiche client</a></li>
+                <li><a href="https://10.90.40.45:8443/CochiseWeb/dm1/afficherTableauDeBord/afficherTableauDeBord.do?cmd=validateInstanceEntite&idUCTableauDeBord=tableauDeBord_SIB_0009&idInstanceEntite=${categories[16].values[i]}" target="_blank">Ouvrir dans le TDB synthèse client</a></li>
                 <li><span class="popup_list_field">Rayon leads : </span>${categories[3].values[i]} km</li>
                 <li><span class="popup_list_field">Prospect : </span>${categories[4].values[i]}</li>
                 <li><span class="popup_list_field">Famille tarifaire : </span>${categories[5].values[i]}</li>
                 <li><span class="popup_list_field">Lead : </span>${categories[6].values[i]}</li>
-                <li><span class="popup_list_field">Date dernière action commerciale : </span>${new Date("" + categories[7].values[i]).toDateString()}</li>
-                <li><span class="popup_list_field">Date dernière commande : </span>${new Date("" + categories[8].values[i]).toDateString()}</li>
+                <li><span class="popup_list_field">Date dernière action commerciale : </span>${categories[7].values[i] ? new Date(String(categories[7].values[i])).toLocaleDateString() : "Aucune"}</li>
+                <li><span class="popup_list_field">Date dernière commande : </span>${categories[8].values[i] ? new Date(String(categories[8].values[i])).toLocaleDateString() : "Aucune"}</li>
                 <li><span class="popup_list_field">Nombre de devis (6MG) : </span>${options.dataViews[0].categorical.values[0]?.values[i] || '0'}</li>
                 <li><span class="popup_list_field">Gammes de lead : </span>
                 <ul>
@@ -126,10 +120,12 @@ export class Visual implements IVisual {
         if (categories[6].values[i] === 'Non' && categories[4].values[i] === 'Non') {
           this.clientLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.clientIcon }).bindPopup(popup))
         }
+        console.log(String(categories[8].values[i]))
+        
         /*
-        if (options.dataViews[0].categorical.values[2].values[i] === 1) {
-          this.alerteLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.alerteIcon }).bindPopup(popup))
-        }
+        document.querySelector(`#id_${categories[16].values[i]}`).addEventListener('click', () => {
+          this.host.launchUrl(`https://10.90.40.45:8443/CochiseWeb/dm1/gererClient/gererClient.do?cmd=consulterClient&id=${categories[16].values[i]}`);
+        })
         */
       }
     )
