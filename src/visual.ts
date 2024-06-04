@@ -1,26 +1,32 @@
 import "./../style/visual.less";
 import "./../style/leaflet.less";
+import * as L from "leaflet";
+import * as d3 from "d3";
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/leaflet.markercluster';
+
 import powerbi from "powerbi-visuals-api";
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import IVisual = powerbi.extensibility.visual.IVisual;
 type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
-import * as d3 from "d3";
-import * as L from "leaflet";
 
 export class Visual implements IVisual {
   private host: IVisualHost;
   private container: Selection<HTMLElement>;
   private map: L.Map;
   private basemap: L.TileLayer;
+  private completeLayer: L.LayerGroup<L.Marker>;
+  /*
   private leadLayer: L.LayerGroup<L.Marker>;
   private clientLayer: L.LayerGroup<L.Marker>;
   private prospectLayer: L.LayerGroup<L.Marker>;
+  */
   private leadIcon: L.Icon;
   private clientIcon: L.Icon;
   private prospectIcon: L.Icon;
-
 
   constructor(options: VisualConstructorOptions) {
     this.host = options.host;
@@ -36,20 +42,31 @@ export class Visual implements IVisual {
     this.map = L.map('map');
     this.map.setView([46.978343, -0.837974], 6)
     this.basemap.addTo(this.map);
+    //@ts-ignore
+    this.completeLayer = L.markerClusterGroup({disableClusteringAtZoom: 9});
+    this.completeLayer.addTo(this.map)
+    /*
+    //@ts-ignore
     this.leadLayer = L.layerGroup();
+    this.leadLayer.addTo(this.completeLayer)
     this.leadLayer.addTo(this.map)
+    //@ts-ignore
     this.clientLayer = L.layerGroup();
+    this.clientLayer.addTo(this.completeLayer)
     this.clientLayer.addTo(this.map)
+    //@ts-ignore
     this.prospectLayer = L.layerGroup();
+    this.prospectLayer.addTo(this.completeLayer)
     this.prospectLayer.addTo(this.map)
-
+*/
     const baseMaps = {
       "OpenStreetMap": this.basemap
     };
     const overlayMaps = {
-      "Leads": this.leadLayer,
+      "Tout": this.completeLayer,
+      /*"Leads": this.leadLayer,
       "Clients": this.clientLayer,
-      "Prospects": this.prospectLayer
+      "Prospects": this.prospectLayer*/
     };
     L.control.layers(baseMaps, overlayMaps).addTo(this.map);
     this.leadIcon = new L.Icon({
@@ -79,15 +96,17 @@ export class Visual implements IVisual {
   }
 
   public update(options: VisualUpdateOptions) {
-    this.leadLayer.clearLayers();
-    this.clientLayer.clearLayers();
-    this.prospectLayer.clearLayers();
+    //this.leadLayer.clearLayers();
+    //this.clientLayer.clearLayers();
+    //this.prospectLayer.clearLayers();
+    this.completeLayer.clearLayers();
     let categories = options.dataViews[0].categorical.categories;
     categories[0].values.forEach(
       (value, i) => {
         const popup = `
-                <h3 id="popup_title">${categories[2].values[i]}, CA = ${Math.round(+options.dataViews[0].categorical.values[1]?.values[i] || 0)} €</h3>
+                <h3 id="popup_title">${categories[2].values[i]}</h3>
                 <ul id="popup_list">
+                <li><span class="popup_list_field">CA sur l'année : </span>${Math.round(+options.dataViews[0].categorical.values[1]?.values[i] || 0)} €</li>
                 <li><a id="id_${categories[16].values[i]}" href="https://10.90.40.45:8443/CochiseWeb/dm1/gererClient/gererClient.do?cmd=consulterClient&id=${categories[16].values[i]}" target="_blank">Ouvrir la fiche client</a></li>
                 <li><a href="https://10.90.40.45:8443/CochiseWeb/dm1/afficherTableauDeBord/afficherTableauDeBord.do?cmd=validateInstanceEntite&idUCTableauDeBord=tableauDeBord_SIB_0009&idInstanceEntite=${categories[16].values[i]}" target="_blank">Ouvrir dans le TDB synthèse client</a></li>
                 <li><span class="popup_list_field">Rayon leads : </span>${categories[3].values[i]} km</li>
@@ -111,16 +130,15 @@ export class Visual implements IVisual {
                 </ul>
                 `
         if (categories[6].values[i] === 'Oui') {
-          this.leadLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.leadIcon }).bindPopup(popup))
-          this.leadLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], { radius: +categories[3].values[i] * 1000, color: "#982E40", weight: 1 }))
+          this.completeLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.leadIcon }).bindPopup(popup))
+          this.completeLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], { radius: +categories[3].values[i] * 1000, color: "#982E40", weight: 1 }))
         }
         if (categories[4].values[i] === 'Oui') {
-          this.prospectLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.prospectIcon }).bindPopup(popup))
+          this.completeLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.prospectIcon }).bindPopup(popup))
         }
         if (categories[6].values[i] === 'Non' && categories[4].values[i] === 'Non') {
-          this.clientLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.clientIcon }).bindPopup(popup))
+          this.completeLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.clientIcon }).bindPopup(popup))
         }
-        console.log(String(categories[8].values[i]))
         
         /*
         document.querySelector(`#id_${categories[16].values[i]}`).addEventListener('click', () => {
@@ -129,9 +147,10 @@ export class Visual implements IVisual {
         */
       }
     )
-    this.map.addLayer(this.leadLayer);
-    this.map.addLayer(this.prospectLayer);
-    this.map.addLayer(this.clientLayer);
+    this.map.addLayer(this.completeLayer);
+    //this.map.addLayer(this.leadLayer);
+    //this.map.addLayer(this.prospectLayer);
+    //this.map.addLayer(this.clientLayer);
   }
 
   public destroy() {

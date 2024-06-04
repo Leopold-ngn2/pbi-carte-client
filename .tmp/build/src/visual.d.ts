@@ -1,5 +1,8 @@
 import "./../style/visual.less";
 import "./../style/leaflet.less";
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/leaflet.markercluster';
 import powerbi from "powerbi-visuals-api";
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
@@ -9,9 +12,7 @@ export declare class Visual implements IVisual {
     private container;
     private map;
     private basemap;
-    private leadLayer;
-    private clientLayer;
-    private prospectLayer;
+    private completeLayer;
     private leadIcon;
     private clientIcon;
     private prospectIcon;
