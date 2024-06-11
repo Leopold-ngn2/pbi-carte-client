@@ -19,11 +19,7 @@ export class Visual implements IVisual {
   private map: L.Map;
   private basemap: L.TileLayer;
   private completeLayer: L.LayerGroup<L.Marker>;
-  /*
-  private leadLayer: L.LayerGroup<L.Marker>;
-  private clientLayer: L.LayerGroup<L.Marker>;
-  private prospectLayer: L.LayerGroup<L.Marker>;
-  */
+  private rayonLeadLayer: L.LayerGroup<L.Marker>;
   private leadIcon: L.Icon;
   private clientIcon: L.Icon;
   private prospectIcon: L.Icon;
@@ -45,28 +41,25 @@ export class Visual implements IVisual {
     //@ts-ignore
     this.completeLayer = L.markerClusterGroup({disableClusteringAtZoom: 9});
     this.completeLayer.addTo(this.map)
-    /*
-    //@ts-ignore
-    this.leadLayer = L.layerGroup();
-    this.leadLayer.addTo(this.completeLayer)
-    this.leadLayer.addTo(this.map)
-    //@ts-ignore
-    this.clientLayer = L.layerGroup();
-    this.clientLayer.addTo(this.completeLayer)
-    this.clientLayer.addTo(this.map)
-    //@ts-ignore
-    this.prospectLayer = L.layerGroup();
-    this.prospectLayer.addTo(this.completeLayer)
-    this.prospectLayer.addTo(this.map)
-*/
+    this.rayonLeadLayer = L.layerGroup();
+    this.map.on('zoomend', () => {
+      if (this.map.getZoom() < 9 ) {
+        this.rayonLeadLayer.remove();
+      } else {
+        console.log(this.rayonLeadLayer.getLayers());
+        
+        if (!this.map.hasLayer(this.rayonLeadLayer)) {
+          this.rayonLeadLayer.addTo(this.map)
+        }
+      }
+    })
+
     const baseMaps = {
       "OpenStreetMap": this.basemap
     };
     const overlayMaps = {
-      "Tout": this.completeLayer,
-      /*"Leads": this.leadLayer,
-      "Clients": this.clientLayer,
-      "Prospects": this.prospectLayer*/
+      "Afficher les positions": this.completeLayer,
+      "Afficher le rayon des Leads": this.rayonLeadLayer
     };
     L.control.layers(baseMaps, overlayMaps).addTo(this.map);
     this.leadIcon = new L.Icon({
@@ -96,9 +89,7 @@ export class Visual implements IVisual {
   }
 
   public update(options: VisualUpdateOptions) {
-    //this.leadLayer.clearLayers();
-    //this.clientLayer.clearLayers();
-    //this.prospectLayer.clearLayers();
+    this.rayonLeadLayer.clearLayers();
     this.completeLayer.clearLayers();
     let categories = options.dataViews[0].categorical.categories;
     categories[0].values.forEach(
@@ -131,7 +122,7 @@ export class Visual implements IVisual {
                 `
         if (categories[6].values[i] === 'Oui') {
           this.completeLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.leadIcon }).bindPopup(popup))
-          this.completeLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], { radius: +categories[3].values[i] * 1000, color: "#982E40", weight: 1 }))
+          this.rayonLeadLayer.addLayer(L.circle([+categories[1].values[i], +categories[0].values[i]], { radius: +categories[3].values[i] * 1000, color: "#982E40", weight: 1 }))
         }
         if (categories[4].values[i] === 'Oui') {
           this.completeLayer.addLayer(L.marker([+categories[1].values[i], +categories[0].values[i]], { icon: this.prospectIcon }).bindPopup(popup))
@@ -148,9 +139,9 @@ export class Visual implements IVisual {
       }
     )
     this.map.addLayer(this.completeLayer);
-    //this.map.addLayer(this.leadLayer);
-    //this.map.addLayer(this.prospectLayer);
-    //this.map.addLayer(this.clientLayer);
+    if (this.map.getZoom() >= 9) {
+      this.rayonLeadLayer.addTo(this.map)
+    }
   }
 
   public destroy() {

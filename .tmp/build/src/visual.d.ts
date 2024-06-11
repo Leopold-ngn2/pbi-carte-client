@@ -13,6 +13,7 @@ export declare class Visual implements IVisual {
     private map;
     private basemap;
     private completeLayer;
+    private rayonLeadLayer;
     private leadIcon;
     private clientIcon;
     private prospectIcon;
